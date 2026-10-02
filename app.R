@@ -260,14 +260,14 @@ car_geo   <- read_gpkg(f_ref("carreaux_boundaries.gpkg"), cat_ = "reference")
 parcs_geo <- read_gpkg(f_ref("parcs_espaces_verts.gpkg"), cat_ = "reference")
 
 # --- Bâtiments ----------------------------------------------------------------
-bat_geo   <- read_gpkg(f_bat("batiments_geometrie.gpkg"), cat_ = "batiments")
-bat_ind   <- read_tbl(f_bat("batiments_indicateurs.csv"), cat_ = "batiments")
+bat_geo   <- read_gpkg(f_bat("bat_geom.gpkg"), cat_ = "batiments")
+bat_ind   <- read_tbl(f_bat("bat_ind.csv"), cat_ = "batiments")
 # batiments_indicateurs.csv n'a pas de CODE_IRIS (confirmé) : sans lui, le
 # filtre arrondissement global ne peut pas s'appliquer à la couche bâtiments.
 # batiments_concordance_brute.csv porte CODE_IRIS sur la même clé ID_BAT ;
 # col_select limite la lecture à 2 colonnes plutôt que les 65 du fichier.
 bat_arr_lookup <- tryCatch({
-  p <- f_bat("batiments_concordance_brute.csv")
+  p <- f_bat("bat_arr.csv")
   if (file.exists(p)) readr::read_csv(p, col_select = c("ID_BAT","CODE_IRIS"), show_col_types = FALSE) else NULL
 }, error = function(e) NULL)
 
@@ -354,7 +354,7 @@ spearman_lst   <- read_tbl(f_stat("spearman_veg_lstmax.csv"), cat_ = "stats")
 # et sa distance. Remplace parcs_desserte_par_parc.csv / _statistiques.csv,
 # fichiers absents du jeu de données ; les statistiques par espace sont
 # dérivées directement de cette table dans output$m1_parcs.
-regle300_bat <- read_tbl(f_bat("regle300_par_batiment.csv"), cat_ = "batiments")
+regle300_bat <- read_tbl(f_bat("bat_parcs.csv"), cat_ = "batiments")
 
 # ==============================================================================
 # 3. RÉSOLUTION DES COLONNES (adapter les patrons ici si le diagnostic signale
@@ -1420,7 +1420,7 @@ server <- function(input, output, session) {
   })
   output$m1_parcs <- renderUI({
     if (is.null(regle300_bat)) return(HTML(sprintf("<span style='color:#607d8b'>%s</span>",
-      if (lang()=="fr") "Table bâtiment x espace vert absente (regle300_par_batiment.csv)." else "Building-to-green-space table missing (regle300_par_batiment.csv).")))
+      if (lang()=="fr") "Table bâtiment x espace vert absente (bat_parcs.csv)." else "Building-to-green-space table missing (bat_parcs.csv).")))
 
     d <- regle300_bat
     # Filtre arrondissement, cohérent avec le reste du module 1 : même

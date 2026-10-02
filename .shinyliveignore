@@ -1,0 +1,17 @@
+# Ignorer le dossier docs lui-même et git
+docs/
+.git/
+.gitignore
+
+# Ignorer tous les scripts de préparation de données
+00_*.R
+08_*.R
+export.R
+test_*.R
+
+# Ignorer les rapports/analyses secondaires
+data/profils_vulnerabilite/cartes/
+data/profils_vulnerabilite/exploratoire_lst_max/
+data/profils_vulnerabilite/graphiques/
+data/profils_vulnerabilite/multivariate/
+data/profils_vulnerabilite/tables/
